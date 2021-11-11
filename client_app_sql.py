@@ -6,7 +6,7 @@ import threading
 import time
 
 
-from modules import sqlClient as sqlC
+import sqlClient as sqlC
 
 
 DISCONNECT_MSG = "!DISCONNECT"
