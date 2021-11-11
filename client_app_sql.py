@@ -4,7 +4,8 @@ from os import listdir
 import socket
 import threading
 import time
-from typing import Coroutine
+
+
 from modules import sqlClient as sqlC
 
 
@@ -81,6 +82,7 @@ def register_user():
     username_info = username.get()
     passsword_info = password.get()
     
+    global conn
     conn = sqlC.sql_conn()
     
     if sqlC.sql_fetch(conn) != False:
@@ -183,6 +185,15 @@ def login():
    
     Button(screen2, text="Login", height="1", width="10", command=login_verify).pack()
     
+def check_data_in_db():
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM CLIENTS')
+    
+    rows = cursor.fetchall()
+    return rows
+            
+            
+
 
 def login_verify():
  
@@ -192,20 +203,18 @@ def login_verify():
     username_entry1.delete(0, END)
     password_entry1.delete(0,END)
 
-    list_of_files = os.listdir()
-    tmp = str(username1) + ".txt"
-    # print(tmp)
-    if tmp in list_of_files:
-        file1 = open(tmp,"r")
-        verify = file1.read().splitlines()
-        print(verify)
-        if password1 in verify:
-            chat_win(username1)
-            delete2()
+    for row in check_data_in_db():
+        if username1 in row:
+            if password in row:
+                print(row)
+                chat_win(username1)
+                delete2()
+            else:
+                password_not_found()
         else:
-            password_not_found()
-    else:
-        user_not_found()
+            user_not_found()
+    
+        
 
 
 

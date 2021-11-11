@@ -1,6 +1,7 @@
 import sqlite3
+import sqlite3
 from sqlite3 import *
-
+from sqlite3 import Error
 
 
 def sql_connection(): # connection to database file 
