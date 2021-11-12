@@ -108,11 +108,12 @@ def register_user():
     passsword_info = password.get()
     
     info = (str(username_info), str(passsword_info))
-    sql_insert(conn, info)
+    #sql_insert(conn, info)
+    thread = threading.Thread(target=sql_insert,args=(conn, info)) 
 
     username_entry.delete(0,END)
     password_entry.delete(0,END)
-
+    thread.start()
     Label(screen1 ,text="Registration is sucessful!!!").pack()
     
 def password_not_found():
