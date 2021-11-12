@@ -90,8 +90,9 @@ def register_user():
             info = (username_info, passsword_info)
             sqlC.sql_insert(conn, info)
     else:
-        info = (username_info, passsword_info)
-        sqlC.sql_insert(conn, info)
+        if sqlC.sql_table(conn) == True:
+            info = (username_info, passsword_info)
+            sqlC.sql_insert(conn, info)
 
     username_entry.delete(0,END)
     password_entry.delete(0,END)
