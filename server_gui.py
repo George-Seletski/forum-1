@@ -135,7 +135,7 @@ def handle_client(conn, addr, nm_client):
             entities = (str(nm_client), str(msg), str(time_now))
             sql_insert(con, entities)
             
-            conn.send("Msg recieved".encode(FORMAT))
+            # conn.send("Msg recieved".encode(FORMAT))
 
     conn.close()
 
@@ -147,7 +147,10 @@ def start(nm_client):
         conn, addr = server.accept()
         nm_client = nm_client + 1
         thread = threading.Thread(target=handle_client,args=(conn, addr,nm_client))
-       
+
+        tmp_row = (str(nm_client), 'CONNECT!', str(time_now))
+        sql_insert(con, tmp_row)
+
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
         
