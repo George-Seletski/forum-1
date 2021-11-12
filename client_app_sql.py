@@ -75,24 +75,17 @@ def register():
 
     Button(screen1, text="Register", width=10, height=1, command=register_user).pack()
     # print("Register  session started")
+    
+global conn
+conn = sqlC.sql_connection()
 
 def register_user():
     
-
     username_info = username.get()
     passsword_info = password.get()
     
-    global conn
-    conn = sqlC.sql_conn()
-    
-    if sqlC.sql_fetch(conn) != False:
-        if sqlC.sql_table(conn) == True:
-            info = (username_info, passsword_info)
-            sqlC.sql_insert(conn, info)
-    else:
-        if sqlC.sql_table(conn) == True:
-            info = (username_info, passsword_info)
-            sqlC.sql_insert(conn, info)
+    info = (str(username_info), str(passsword_info))
+    sqlC.sql_insert(conn, info)
 
     username_entry.delete(0,END)
     password_entry.delete(0,END)
@@ -205,8 +198,8 @@ def login_verify():
     password_entry1.delete(0,END)
 
     for row in check_data_in_db():
-        if username1 in row:
-            if password in row:
+        if str(username1) in row:
+            if str(password) in row:
                 print(row)
                 chat_win(username1)
                 delete2()

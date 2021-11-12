@@ -150,7 +150,7 @@ def start(nm_client):
        
         thread.start()
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
-
+        
 
 
 def quit(self):

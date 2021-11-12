@@ -5,7 +5,7 @@ from sqlite3 import Error
 
 def sql_connection(): # connection to database file 
     try:
-        con = sqlite3.connect('clients.db',check_same_thread=False)
+        con = sqlite3.connect('client.db',check_same_thread=False)
         return con
     except sqlite3.Error:
         print(sqlite3.Error)
@@ -19,6 +19,7 @@ def sql_table(con): #creation database
 def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO CLIENTS(name_client,passw) VALUES(?,?)', entities)
+    print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
     con.commit()
 
 def sql_fetch(con): # check if the database is created already
