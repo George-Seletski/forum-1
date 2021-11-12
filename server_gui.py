@@ -35,7 +35,7 @@ def sql_table(con): #creation database
     cursorObj = con.cursor()
     cursorObj.execute("CREATE TABLE logs(name_client text, msg text, date_time text)")
     con.commit()
-    return True
+    
 
 def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
@@ -46,7 +46,7 @@ def sql_fetch(con): # check if the database is created already
     cursorObj = con.cursor()
     cursorObj.execute('create table if not exists logs(name_client,msg, date_time)')
     con.commit()
-    return False
+    
 
 def sql_fetchall(con, text):
     cursorObj = con.cursor()
@@ -152,6 +152,7 @@ def start(nm_client):
         sql_insert(con, tmp_row)
 
         thread.start()
+        
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
         
 
@@ -169,29 +170,30 @@ if (nm_client != 0):
 
 print("[STARTING] server is starting...")
 
-if sql_fetch(con) != False:
-    if sql_table(con) == True:
-        print('OK!!!!!\n')
 
 
 
-'''while (fl_cl == False):
-    window = Tk()
-    window.title("FORUM")
-    window.geometry('400x250')
-            
-    txt = scrolledtext.ScrolledText(window,width=100, height = 70)
-    txt.grid(column=0, row = 0)
-    button_cls = tkinter.Button(window, text="quit", command=window.quit)
-    button_cls.grid(column=4, row = 0)
+def server_wind():
+    while (fl_cl == False):
+        window = Tk()
+        window.title("FORUM")
+        window.geometry('400x250')
+                
+        txt = scrolledtext.ScrolledText(window,width=100, height = 70)
+        txt.grid(column=0, row = 0)
+        button_cls = tkinter.Button(window, text="quit", command=window.quit)
+        button_cls.grid(column=4, row = 0)
 
-    time.sleep(5)
-    sql_fetchall(con,txt)
-    
-    txt.configure(state='disabled')
-    time.sleep(10)
-    window.mainloop()'''
+        time.sleep(5)
+        sql_fetchall(con,txt)
+        
+        txt.configure(state='disabled')
+        time.sleep(10)
+        window.mainloop()
 
+server_window = threading.Thread(target=server_wind)
+server_window.start()
+if nm_client > 1:
+    server_window.sleep(60)
 start(nm_client)
-# start_server()
 
