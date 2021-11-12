@@ -4,9 +4,10 @@ from os import listdir
 import socket
 import threading
 import time
+import sqlite3
+from sqlite3 import *
 
-
-import sqlClient as sqlC
+# import sqlClient as sqlC
 
 
 DISCONNECT_MSG = "!DISCONNECT"
@@ -33,8 +34,30 @@ def send(msg):
     client.send(nm_clnt.to_bytes(2))
     print(client.recv(2048).decode(FORMAT))
 
+def sql_connection(): # connection to database file 
+    try:
+        con = sqlite3.connect('client.db',check_same_thread=False)
+        return con
+    except sqlite3.Error:
+        print(sqlite3.Error)
 
+def sql_table(con): #creation database
+    cursorObj = con.cursor()
+    cursorObj.execute("CREATE TABLE CLIENTS(name_client text, passw text)")
+    con.commit()
+    return True
 
+def sql_insert(con, entities): # inserting into database
+    cursorObj = con.cursor()
+    cursorObj.execute('INSERT INTO CLIENTS(name_client,passw) VALUES(?,?)', entities)
+    print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
+    con.commit()
+
+def sql_fetch(con): # check if the database is created already
+    cursorObj = con.cursor()
+    cursorObj.execute('create table if not exists CLIENTS(name_client,passw)')
+    con.commit()
+    return False
 
 
 rT = threading.Thread(target = send, args = ("RecvThread",client))
@@ -77,7 +100,7 @@ def register():
     # print("Register  session started")
     
 global conn
-conn = sqlC.sql_connection()
+conn = sql_connection()
 
 def register_user():
     
@@ -85,7 +108,7 @@ def register_user():
     passsword_info = password.get()
     
     info = (str(username_info), str(passsword_info))
-    sqlC.sql_insert(conn, info)
+    sql_insert(conn, info)
 
     username_entry.delete(0,END)
     password_entry.delete(0,END)
