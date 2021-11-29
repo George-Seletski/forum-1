@@ -108,7 +108,8 @@ def register_user():
     passsword_info = password.get()
     
     info = (str(username_info), str(passsword_info))
-
+    
+    sql_table(conn)
     sql_insert(conn, info)
     
     #thread = threading.Thread(target=sql_insert,args=(conn, info)) 
