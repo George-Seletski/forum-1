@@ -26,7 +26,7 @@ nm_client = 0
 
 def sql_connection(): # connection to database file 
     try:
-        con = sqlite3.connect('logs.db',check_same_thread=False)
+        con = sqlite3.connect('log_h.db',check_same_thread=False)
         return con
     except sqlite3.Error:
         print(sqlite3.Error)
@@ -41,11 +41,11 @@ def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO logs(name_client,msg, date_time) VALUES(?,?, ?)', entities)
     con.commit()
-
+'''
 def sql_fetch(con): # check if the database is created already
     cursorObj = con.cursor()
     cursorObj.execute('create table if not exists logs(name_client,msg, date_time)')
-    con.commit()
+    con.commit()'''
     
 
 def sql_fetchall(con, text):
@@ -117,7 +117,6 @@ def handle_client(conn, addr):
 def handle_client(conn, addr, nm_client): 
     
     print(f"[NEW CONNECTION] {addr} connected.")
-    
     connected = True
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
@@ -140,7 +139,7 @@ def handle_client(conn, addr, nm_client):
     conn.close()
 
 def start(nm_client):
-   
+    
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
@@ -155,14 +154,36 @@ def start(nm_client):
         
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
         
-
-
 def quit(self):
     self.root.destroy()
 
+
+def destroy_wind(win,ser_w):
+    ser_w.stop()
+    win.quit()
+
+class server_thread(threading.Thread):
+
+    def __init__(self):
+        super(server_thread, self).__init__()
+        self._stop = threading.Event()
+     # function using _stop function
+    def stop(self):
+        self._stop.set()
+ 
+    def stopped(self):
+        return self._stop.isSet()
+ 
+    def run(self):
+        while True:
+            if self.stopped():
+                return
+            print("Hello, world!")
+            time.sleep(1)
 ###############################################################################################
 global con 
 con = sql_connection()
+
 
 if (nm_client != 0):
     fl_cl = True
@@ -171,8 +192,7 @@ if (nm_client != 0):
 print("[STARTING] server is starting...")
 
 
-
-
+    
 def server_wind():
     while (fl_cl == False):
         window = Tk()
@@ -181,9 +201,10 @@ def server_wind():
                 
         txt = scrolledtext.ScrolledText(window,width=100, height = 70)
         txt.grid(column=0, row = 0)
+        #button_cls = tkinter.Button(window, text="quit", command=destroy_wind(window,server_window))
         button_cls = tkinter.Button(window, text="quit", command=window.quit)
         button_cls.grid(column=4, row = 0)
-
+    
         time.sleep(5)
         sql_fetchall(con,txt)
         
@@ -193,7 +214,11 @@ def server_wind():
 
 server_window = threading.Thread(target=server_wind)
 server_window.start()
-if nm_client > 1:
+#server_window = server_thread(target = server_wind)
+#server_window.start()
+
+if nm_client > 0:
     server_window.sleep(60)
+
 start(nm_client)
 

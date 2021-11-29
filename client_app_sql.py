@@ -50,7 +50,8 @@ def sql_table(con): #creation database
 def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO CLIENTS(name_client,passw) VALUES(?,?)', entities)
-    print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
+    #print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
+    print('OK!')
     con.commit()
 
 def sql_fetch(con): # check if the database is created already
@@ -109,7 +110,7 @@ def register_user():
     
     info = (str(username_info), str(passsword_info))
     
-    sql_table(conn)
+    sql_fetch(conn)
     sql_insert(conn, info)
     
     #thread = threading.Thread(target=sql_insert,args=(conn, info)) 
@@ -131,8 +132,8 @@ def password_not_found():
 
 def click_tosend():
     res = txt_msg.get()
-    txt_msg.delete(0,END)
     send(res)
+    txt_msg.delete(0,END)
     
 def delete_mainScren():
     # send(DISCONNECT_MSG)
@@ -144,13 +145,15 @@ def click_toDisconnect():
     
 
 
-def chat_win(name):
+def chat_window(name):
     global screen3
     global txt_msg
     global tmp_name
 
     tmp_name  = name
-
+    
+    rT.start()
+    
     screen3 = Toplevel(screen)
     # title1 = str(username)
     screen3.title(name)
@@ -168,7 +171,7 @@ def chat_win(name):
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
-    rT.start()
+   
 
     rT.join()
 
@@ -228,9 +231,9 @@ def login_verify():
 
     for row in check_data_in_db():
         if str(username1) in row:
-            if str(password) in row:
+            if str(password1) in row:
                 print(row)
-                chat_win(username1)
+                chat_window(username1)
                 delete2()
             else:
                 password_not_found()
