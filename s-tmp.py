@@ -41,7 +41,11 @@ def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO logs(name_client,msg, date_time) VALUES(?,?, ?)', entities)
     con.commit()
-
+'''
+def sql_fetch(con): # check if the database is created already
+    cursorObj = con.cursor()
+    cursorObj.execute('create table if not exists logs(name_client,msg, date_time)')
+    con.commit()'''
     
 
 def sql_fetchall(con, text):
@@ -52,6 +56,63 @@ def sql_fetchall(con, text):
         text.insert(INSERT,row)
         text.insert(INSERT,'\n')
 
+'''
+def handle_client(conn, addr, nm_client): 
+    
+    print(f"[NEW CONNECTION] {addr} connected.")
+    
+    connected = True
+    while connected:
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+        
+        if msg_length:
+           
+            msg_length = int(msg_length)
+            msg = conn.recv(msg_length).decode(FORMAT)
+            
+            if msg == DISCONNECT_MSG:
+                connected = False
+
+            print(f"[{addr}]{msg} [{time_now}]")
+
+            entities = (str(nm_client), str(msg), str(time_now))
+            sql_insert(con, entities)
+            
+            conn.send("Msg recieved".encode(FORMAT))
+
+    conn.close()
+
+def handle_client(conn, addr): 
+    
+    print(f"[NEW CONNECTION] {addr} connected.")
+    
+    connected = True
+    while connected:
+        user_length = conn.recv(HEADER).decode(FORMAT)
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+
+        if user_length:
+            user_length = int(user_length)
+            client_name = conn.recv(user_length).decode(FORMAT)
+
+            if msg_length:
+            
+                msg_length = int(msg_length)
+                msg = conn.recv(msg_length).decode(FORMAT)
+                
+                if msg == DISCONNECT_MSG:
+                    connected = False
+
+                print(f"[{client_name}]{msg} [{time_now}]")
+
+                entities = (str(client_name), str(msg), str(time_now))
+                sql_insert(con, entities)
+                
+                conn.send("Msg recieved".encode(FORMAT))
+
+
+    conn.close()
+'''
 
 def handle_client(conn, addr, nm_client): 
     

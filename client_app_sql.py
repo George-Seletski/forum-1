@@ -21,7 +21,7 @@ client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client.connect(ADDR)
 nm_clnt = 0
 
-global rT
+# global rT
 
 def send(msg):
     message = msg.encode(FORMAT)
@@ -61,7 +61,7 @@ def sql_fetch(con): # check if the database is created already
     return False
 
 
-rT = threading.Thread(target = send, args = ("RecvThread",client))
+# rT = threading.Thread(target = send, args = ("RecvThread",client))
 
 def delete2():
     screen2.destroy()
@@ -152,7 +152,7 @@ def chat_window(name):
 
     tmp_name  = name
     
-    rT.start()
+    # rT.start()
     
     screen3 = Toplevel(screen)
     # title1 = str(username)
@@ -171,9 +171,7 @@ def chat_window(name):
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
-   
-
-    rT.join()
+    # rT.join()
 
 def user_not_found():
     global screen4
@@ -214,7 +212,7 @@ def login():
 def check_data_in_db():
     cursor = conn.cursor()
     cursor.execute('SELECT * FROM CLIENTS')
-    
+    print('OK!')
     rows = cursor.fetchall()
     return rows
             
@@ -232,7 +230,7 @@ def login_verify():
     for row in check_data_in_db():
         if str(username1) in row:
             if str(password1) in row:
-                print(row)
+               
                 chat_window(username1)
                 delete2()
             else:
