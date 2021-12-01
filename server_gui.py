@@ -21,7 +21,7 @@ server.bind(ADDR)
 today = datetime.datetime.today()
 time_now = today.strftime("%Y-%m-%d-%H.%M.%S")
 
-fl_cl = False
+fl_cl = False #flag for number of clients
 nm_client = 0
 
 def sql_connection(): # connection to database file 
@@ -44,10 +44,10 @@ def sql_insert(con, entities): # inserting into database
 
     
 
-def sql_fetchall(con, text):
+def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
     cursorObj = con.cursor()
     cursorObj.execute('SELECT * FROM logs')
-    rows = cursorObj.fetchall()
+    rows = cursorObj.fetchall() #getting all data from sql query
     for row in rows:
         text.insert(INSERT,row)
         text.insert(INSERT,'\n')
@@ -77,7 +77,7 @@ def handle_client(conn, addr, nm_client):
 
     conn.close()
 
-def start(nm_client):
+def start(nm_client): # the main process 
     
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
@@ -90,55 +90,25 @@ def start(nm_client):
         sql_insert(con, tmp_row)
 
         thread.start()
-        
+
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
         
-def quit(self):
+def quit(self): # destruction of window
     self.root.destroy()
 
 
-def destroy_wind(win,ser_w):
+def destroy_wind(win,ser_w): #closing the whole app
     ser_w.stop()
     win.quit()
 
-class server_thread(threading.Thread):
 
-    def __init__(self):
-        super(server_thread, self).__init__()
-        self._stop = threading.Event()
-     # function using _stop function
-    def stop(self):
-        self._stop.set()
- 
-    def stopped(self):
-        return self._stop.isSet()
- 
-    def run(self):
-        while True:
-            if self.stopped():
-                return
-            print("Hello, world!")
-            time.sleep(1)
-###############################################################################################
-global con 
-con = sql_connection()
-
-
-if (nm_client != 0):
-    fl_cl = True
-
-
-print("[STARTING] server is starting...")
-
-
-    
-def server_wind():
+def server_wind(): # drawing server
     while (fl_cl == False):
         window = Tk()
         window.title("FORUM")
         window.geometry('400x250')
                 
-        txt = scrolledtext.ScrolledText(window,width=100, height = 70)
+        txt = scrolledtext.ScrolledText(window,width=100, height = 50)
         txt.grid(column=0, row = 0)
         #button_cls = tkinter.Button(window, text="quit", command=destroy_wind(window,server_window))
         button_cls = tkinter.Button(window, text="quit", command=window.quit)
@@ -151,8 +121,20 @@ def server_wind():
         time.sleep(10)
         window.mainloop()
 
+###############################################################################################
+global con 
+con = sql_connection() # connection to db
+
+if (nm_client != 0):
+    fl_cl = True
+
+
+print("[STARTING] server is starting...")
+
+
 server_window = threading.Thread(target=server_wind)
 server_window.start()
+
 #server_window = server_thread(target = server_wind)
 #server_window.start()
 
