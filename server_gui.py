@@ -53,7 +53,7 @@ def sql_fetchall(con, text): # pasting query results from db in server-window(TX
         text.insert(INSERT,'\n')
 
 
-def handle_client(conn, addr, nm_client): 
+def handle_client(conn, nm1, addr, nm_client): 
     
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
@@ -68,14 +68,25 @@ def handle_client(conn, addr, nm_client):
             if msg == DISCONNECT_MSG:
                 connected = False
 
-            print(f"[{addr}]{msg} [{time_now}]")
+            print(f"[{addr}]--[{nm1}]::{msg}[{time_now}]")
 
             entities = (str(nm_client), str(msg), str(time_now))
             sql_insert(con, entities)
-            
-            # conn.send("Msg recieved".encode(FORMAT))
 
+            # conn.send("Msg recieved".encode(FORMAT))
     conn.close()
+
+def get_name(conn):
+    while True:
+        name_len = conn.recv(HEADER).decode(FORMAT)
+
+        if name_len:
+            name_len = int(nm_client)
+            name = conn.recv(name_len).decode(FORMAT)
+            res_nm = str(name)
+        # print('{name}')
+    return res_nm
+
 
 def start(nm_client): # the main process 
     
@@ -84,9 +95,11 @@ def start(nm_client): # the main process
     while True:
         conn, addr = server.accept()
         nm_client = nm_client + 1
+        #user_nickname = get_name(conn)
         thread = threading.Thread(target=handle_client,args=(conn, addr,nm_client))
 
         tmp_row = (str(nm_client), 'CONNECT!', str(time_now))
+        # tmp_row = (user_nickname, 'CONNECT!', str(time_now))
         sql_insert(con, tmp_row)
 
         thread.start()

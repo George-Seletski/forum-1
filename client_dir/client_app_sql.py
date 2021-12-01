@@ -19,9 +19,18 @@ ADDR = (SERVER,PORT)
 
 client = socket.socket(socket.AF_INET,socket.SOCK_STREAM)
 client.connect(ADDR)
-nm_clnt = 0
+#nm_clnt = 0
 
 global rT
+
+def send_nickname(nm):
+    nickn = nm.encode(FORMAT)
+    nm_length = len(nickn)
+    send_nm_l = str(nm_length).encode(FORMAT)
+    send_nm_l += b' ' * (HEADER - len(send_nm_l))
+    client.send(send_nm_l)
+    client.send(nickn)
+
 
 def send(msg):
     message = msg.encode(FORMAT)
@@ -31,12 +40,13 @@ def send(msg):
     client.send(send_length)
     client.send(message)
 
-    client.send(nm_clnt.to_bytes(2))
-    print(client.recv(2048).decode(FORMAT))
+    #client.send(nm_clnt.to_bytes(2))
+    #print(client.recv(2048).decode(FORMAT))
 
 def sql_connection(): # connection to database file 
     try:
         con = sqlite3.connect('clients.db',check_same_thread=False)
+        print('OK_sql_connection!')
         return con
     except sqlite3.Error:
         print(sqlite3.Error)
@@ -44,6 +54,7 @@ def sql_connection(): # connection to database file
 def sql_table(con): #creation database
     cursorObj = con.cursor()
     cursorObj.execute("CREATE TABLE CLIENTS(name_client text, passw text)")
+    print('OK_sql_table!')
     con.commit()
     return True
 
@@ -51,7 +62,7 @@ def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
     cursorObj.execute('INSERT INTO CLIENTS(name_client,passw) VALUES(?,?)', entities)
     #print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
-    print('OK!')
+    print('OK_sql_insrtn!')
     con.commit()
 
 def sql_fetch(con): # check if the database is created already
@@ -131,7 +142,7 @@ def password_not_found():
 
 
 def click_tosend():
-    res = txt_msg.get()
+    res = str(txt_msg.get())
     send(res)
     txt_msg.delete(0,END)
     
@@ -153,7 +164,9 @@ def chat_window(name):
     tmp_name  = name
     
     rT.start()
-    
+
+    send_nickname(name)
+
     screen3 = Toplevel(screen)
     # title1 = str(username)
     screen3.title(name)
@@ -220,7 +233,8 @@ def check_data_in_db():
 
 
 def login_verify():
- 
+    #global username1
+
     username1 = username_verify.get()
     password1 = password_verify.get()
 
@@ -230,13 +244,13 @@ def login_verify():
     for row in check_data_in_db():
         if str(username1) in row:
             if str(password1) in row:
-               
                 chat_window(username1)
                 delete2()
             else:
                 password_not_found()
         else:
             user_not_found()
+    
     
         
 
