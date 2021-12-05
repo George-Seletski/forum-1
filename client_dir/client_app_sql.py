@@ -72,6 +72,7 @@ def sql_fetch(con): # check if the database is created already
     return False
 
 
+
 rT = threading.Thread(target = send, args = ("RecvThread",client))
 
 def delete2():
@@ -155,7 +156,6 @@ def click_toDisconnect():
     send(DISCONNECT_MSG)
     
 
-
 def chat_window(name):
     global screen3
     global txt_msg
@@ -222,14 +222,18 @@ def login():
    
     Button(screen2, text="Login", height="1", width="10", command=login_verify).pack()
     
+
+            
 def check_data_in_db():
-    cursor = conn.cursor()
-    cursor.execute('SELECT * FROM CLIENTS')
-    print('OK!')
+    con = sqlite3.connect('clients.db')
+    cursor = con.cursor()
+    cursor.execute("SELECT * FROM CLIENTS")
+    print('OK! CHECK_DATA!')
     rows = cursor.fetchall()
+    for el in rows:
+        print(dict(el))
     return rows
-            
-            
+      
 
 
 def login_verify():
@@ -240,6 +244,8 @@ def login_verify():
 
     username_entry1.delete(0, END)
     password_entry1.delete(0,END)
+
+    # user_list = check_data_in_db()
 
     for row in check_data_in_db():
         if str(username1) in row:

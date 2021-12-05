@@ -53,7 +53,7 @@ def sql_fetchall(con, text): # pasting query results from db in server-window(TX
         text.insert(INSERT,'\n')
 
 
-def handle_client(conn, nm1, addr, nm_client): 
+def handle_client(conn, addr, nm_client): 
     
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
@@ -68,7 +68,7 @@ def handle_client(conn, nm1, addr, nm_client):
             if msg == DISCONNECT_MSG:
                 connected = False
 
-            print(f"[{addr}]--[{nm1}]::{msg}[{time_now}]")
+            print(f"[{addr}]--[X]::{msg}[{time_now}]")
 
             entities = (str(nm_client), str(msg), str(time_now))
             sql_insert(con, entities)
