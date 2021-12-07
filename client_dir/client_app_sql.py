@@ -6,7 +6,7 @@ import threading
 import time
 import sqlite3
 from sqlite3 import *
-
+from tkinter import scrolledtext
 # import sqlClient as sqlC
 
 
@@ -71,7 +71,13 @@ def sql_fetch(con): # check if the database is created already
     con.commit()
     return False
 
-
+def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
+    cursorObj = con.cursor()
+    cursorObj.execute('SELECT * FROM logs')
+    rows = cursorObj.fetchall() #getting all data from sql query
+    for row in rows:
+        text.insert(INSERT,row)
+        text.insert(INSERT,'\n')
 
 rT = threading.Thread(target = send, args = ("RecvThread",client))
 
@@ -157,25 +163,36 @@ def click_toDisconnect():
     
 
 def chat_window(name):
+    
     global screen3
     global txt_msg
     global tmp_name
 
     tmp_name  = name
-    
+    time.sleep(5)
+    con = sqlite3.connect('loggy.db',check_same_thread=False)
+    time.sleep(5)
     rT.start()
 
     send_nickname(name)
 
     screen3 = Toplevel(screen)
-    # title1 = str(username)
+
+
+
+
     screen3.title(name)
     screen3.geometry("400x250")
+
+    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
+    txt.pack()
+
+    sql_fetchall(con, txt)
 
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
 
-    txt_msg = Entry(screen3, width="30")
+    txt_msg = Entry(screen3, width=50)
     txt_msg.pack()
     Label(screen3,text="").pack()
 
@@ -192,7 +209,7 @@ def user_not_found():
     screen4.title('ERROR')
     screen4.geometry("200x150")
     Label(screen4,text="User not found!").pack()
-
+    screen4.destroy()
 
 def login():
     global screen2
@@ -253,7 +270,8 @@ def login_verify():
             else:
                 password_not_found()
         else:
-            user_not_found()
+           user_not_found()
+           # pass
     
     
         
@@ -266,8 +284,14 @@ def main_screen():
     screen = Tk()
     screen.geometry("300x250")
     screen.title("Login & Register")
-    Label(screen, text="Notes 1.0", bg="grey", width ="300", height="2", font=("Calibri", 13)).pack()
+    Label(screen, text="Client", bg="grey", width ="300", height="2", font=("Calibri", 13)).pack()
     Label(screen, text="").pack()
+
+                    
+
+    
+    #time.sleep(5)
+
     Button(screen, text="Login", height="2", width="30", command=login).pack()
     Label(screen, text="").pack()
     Button(screen, text="Register", height="2", width="30", command=register).pack()
