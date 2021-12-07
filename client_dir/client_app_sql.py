@@ -45,7 +45,7 @@ def send(msg):
 
 def sql_connection(): # connection to database file 
     try:
-        con = sqlite3.connect('clients.db',check_same_thread=False)
+        con = sqlite3.connect('users.db',check_same_thread=False)
         print('OK_sql_connection!')
         return con
     except sqlite3.Error:
@@ -53,21 +53,21 @@ def sql_connection(): # connection to database file
 
 def sql_table(con): #creation database
     cursorObj = con.cursor()
-    cursorObj.execute("CREATE TABLE CLIENTS(name_client text, passw text)")
+    cursorObj.execute("CREATE TABLE users(name_client text, passw text)")
     print('OK_sql_table!')
     con.commit()
     return True
 
 def sql_insert(con, entities): # inserting into database
     cursorObj = con.cursor()
-    cursorObj.execute('INSERT INTO CLIENTS(name_client,passw) VALUES(?,?)', entities)
+    cursorObj.execute('INSERT INTO users(name_client,passw) VALUES(?,?)', entities)
     #print(cursorObj.execute('SELECT * FROM CLIENTS').rowcount)
     print('OK_sql_insrtn!')
     con.commit()
 
 def sql_fetch(con): # check if the database is created already
     cursorObj = con.cursor()
-    cursorObj.execute('create table if not exists CLIENTS(name_client,passw)')
+    cursorObj.execute('create table if not exists users(name_client,passw)')
     con.commit()
     return False
 
@@ -225,13 +225,11 @@ def login():
 
             
 def check_data_in_db():
-    con = sqlite3.connect('clients.db')
+    con = sqlite3.connect('users.db')
     cursor = con.cursor()
-    cursor.execute("SELECT * FROM CLIENTS")
+    cursor.execute("SELECT * FROM users")
     print('OK! CHECK_DATA!')
     rows = cursor.fetchall()
-    for el in rows:
-        print(dict(el))
     return rows
       
 

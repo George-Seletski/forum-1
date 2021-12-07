@@ -124,14 +124,14 @@ def server_wind(): # drawing server
         txt = scrolledtext.ScrolledText(window,width=100, height = 50)
         txt.grid(column=0, row = 0)
         #button_cls = tkinter.Button(window, text="quit", command=destroy_wind(window,server_window))
-        button_cls = tkinter.Button(window, text="quit", command=window.quit)
-        button_cls.grid(column=4, row = 0)
+        #button_cls = tkinter.Button(window, text="quit", command=window.quit)
+        #button_cls.grid(column=4, row = 0)
     
         time.sleep(5)
         sql_fetchall(con,txt)
         
         txt.configure(state='disabled')
-        time.sleep(10)
+        time.sleep(5)
         window.mainloop()
 
 ###############################################################################################
