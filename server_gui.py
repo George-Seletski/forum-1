@@ -1,3 +1,4 @@
+from ctypes import windll
 import socket
 import sqlite3
 import threading
@@ -7,6 +8,7 @@ import time
 from tkinter import *
 from tkinter import scrolledtext
 import tkinter
+import random
 
 HEADER = 512
 PORT = 5050
@@ -83,26 +85,16 @@ def handle_client(conn, addr):
             # conn.send("Msg recieved".encode(FORMAT))
     conn.close()
 
-def get_name(conn):
-    while True:
-        name_len = conn.recv(HEADER).decode(FORMAT)
 
-        if name_len:
-            name_len = int(nm_client)
-            name = conn.recv(name_len).decode(FORMAT)
-            res_nm = str(name)
-        # print('{name}')
-    return res_nm
 
 
 def start(): # the main process 
-    
+    addr_list = []
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
-        #nm_client = nm_client + 1
-        #user_nickname = get_name(conn)
+        addr_list.append(addr)
         thread = threading.Thread(target=handle_client,args=(conn, addr))
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
@@ -110,7 +102,7 @@ def start(): # the main process
 
         thread.start()
 
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 1}")
+        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
         
 def quit(self): # destruction of window
     self.root.destroy()
@@ -121,20 +113,28 @@ def destroy_wind(win,ser_w): #closing the whole app
     win.quit()
 
 
+
+
 def server_wind(): # drawing server
     while True:
         window = Tk()
         window.title("FORUM")
         window.geometry('400x250')
                 
+        #window.update()
+
         txt = scrolledtext.ScrolledText(window,width=100, height = 50)
         txt.grid(column=0, row = 0)
-    
+        # window.updateGUI()
+        
+
+        time.sleep(1)
+
         #time.sleep(5)
         sql_fetchall(con,txt)
         
         txt.configure(state='disabled')
-        time.sleep(2)
+        # time.sleep(2)
         
         window.update()
         window.mainloop()

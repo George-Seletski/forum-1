@@ -169,9 +169,9 @@ def chat_window(name):
     global tmp_name
 
     tmp_name  = name
-    time.sleep(5)
+
     con = sqlite3.connect('loggy.db',check_same_thread=False)
-    time.sleep(5)
+
     rT.start()
 
     send_nickname(name)
@@ -179,10 +179,8 @@ def chat_window(name):
     screen3 = Toplevel(screen)
 
 
-
-
     screen3.title(name)
-    screen3.geometry("400x250")
+    screen3.geometry("700x750")
 
     txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
     txt.pack()
@@ -201,7 +199,9 @@ def chat_window(name):
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
+    
     rT.join()
+    screen3.update()
 
 def user_not_found():
     global screen4
@@ -299,6 +299,7 @@ def main_screen():
     Label(screen, text="").pack()
     Button(screen, text="CloseApp", height="2", width="30", command=delete_mainScren).pack()
 
+    
 
     screen.mainloop()
 
