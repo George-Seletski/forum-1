@@ -173,11 +173,11 @@ def chat_window(name):
     con = sqlite3.connect('loggy.db',check_same_thread=False)
 
     rT.start()
-
+    
     send_nickname(name)
 
-    screen3 = Toplevel(screen)
-
+    screen3 = Toplevel(screen2)
+    
 
     screen3.title(name)
     screen3.geometry("700x750")
@@ -199,9 +199,9 @@ def chat_window(name):
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
-    
     rT.join()
-    screen3.update()
+    
+    # screen3.update()
 
 def user_not_found():
     global screen4
