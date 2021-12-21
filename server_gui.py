@@ -24,7 +24,7 @@ today = datetime.datetime.today()
 time_now = today.strftime("%Y-%m-%d-%H.%M.%S")
 
 fl_cl = False #flag for number of clients
-nm_client = 0
+
 
 def sql_connection(): # connection to database file 
     try:
@@ -85,17 +85,37 @@ def handle_client(conn, addr):
             # conn.send("Msg recieved".encode(FORMAT))
     conn.close()
 
+#Function that continuosly searches for connections
+def send_clients(connectionList, addressList,nm_client):
 
+    while True:
+        for j in range(0,nm_client):
+            message = connectionList[j].recv(1024)
+            print(str(message,'utf8'))
+
+            #for loop to send message to each
+            for i in range(0,nm_client):
+                #connectionList[i].sendto(bytes(str(message),encoding='utf8'), addressList[i])
+                connectionList[i].sendto(message, addressList[i])
+
+    connection.close()
 
 
 def start(): # the main process 
+    nm_client = 0
     addr_list = []
+    coon_list = []
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        print('Got connection from', addr)
+
+        nm_client += 1
         addr_list.append(addr)
-        thread = threading.Thread(target=handle_client,args=(conn, addr))
+        coon_list.append(conn)
+
+        thread = threading.Thread(target=send_clients,args=(conn, addr,nm_client))
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
@@ -103,6 +123,7 @@ def start(): # the main process
         thread.start()
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
+    socket.close()
         
 def quit(self): # destruction of window
     self.root.destroy()
@@ -116,6 +137,7 @@ def destroy_wind(win,ser_w): #closing the whole app
 
 
 def server_wind(): # drawing server
+ 
     while True:
         window = Tk()
         window.title("FORUM")
@@ -133,10 +155,8 @@ def server_wind(): # drawing server
         #time.sleep(5)
         sql_fetchall(con,txt)
         
-        txt.configure(state='disabled')
-        # time.sleep(2)
-        
-        window.update()
+        # txt.configure(state='disabled')
+        time.sleep(2)
         window.mainloop()
         
 
@@ -149,9 +169,6 @@ sql_fetch(con)
 
 server_window = threading.Thread(target=server_wind)
 server_window.start()
-
-#server_window = server_thread(target = server_wind)
-#server_window.start()
 
 
 

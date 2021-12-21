@@ -163,7 +163,15 @@ def delete_mainScren():
 def click_toDisconnect():
     delete3()
     send(DISCONNECT_MSG)
-    
+
+#function waiting to receive and print a message
+def receive(nothing,message):
+
+    while True:
+
+        data = sock.recv(1024)
+        if message != data:
+            print(str(data,'utf8'))
 
 def chat_window(name):
 
@@ -173,34 +181,37 @@ def chat_window(name):
 
     tmp_name  = name
 
-   
+#    send_nickname(name)
+#    arbitrary variable allowing us to have a thread
+    nothing = (0,1)
+    # rT.start()
+    while True:
+        screen3 = Toplevel(screen)
+        # rT.join()
+        screen3.title(name)
+        screen3.geometry("700x750")
 
-    send_nickname(name)
+        txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
+        txt.pack()
 
-    rT.start()
+        Label(screen3,text="Your message:").pack()
+        Label(screen3,text="").pack()
 
-    screen3 = Toplevel(screen)
-    
-    screen3.title(name)
-    screen3.geometry("700x750")
+        txt_msg = Entry(screen3, width=50)
+        txt_msg.pack()
 
-    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
-    txt.pack()
+        Label(screen3,text="").pack()
 
-    Label(screen3,text="Your message:").pack()
-    Label(screen3,text="").pack()
+        message = name + str(txt_msg.get())
 
-    txt_msg = Entry(screen3, width=50)
-    txt_msg.pack()
-    Label(screen3,text="").pack()
+        Button(screen3, text="Send", height="2", width="30", command= socket.send(bytes(message, encoding='utf8'))).pack()
+        Label(screen3, text="").pack()
+        
+        Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
 
-    Button(screen3, text="Send", height="2", width="30", command= click_tosend).pack()
-    Label(screen3, text="").pack()
-
-    Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
-    screen3.update(1)
-
-    rT.join()
+        th_c = threading.Thread(target = receive, args = (nothing,message))
+        th_c.start()
+        
     
 
 
