@@ -73,11 +73,14 @@ def sql_fetch(con): # check if the database is created already
 
 def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
     cursorObj = con.cursor()
-    cursorObj.execute('SELECT * FROM logs')
+    cursorObj.execute('SELECT * FROM loggy')
     rows = cursorObj.fetchall() #getting all data from sql query
     for row in rows:
         text.insert(INSERT,row)
         text.insert(INSERT,'\n')
+
+
+
 
 rT = threading.Thread(target = send, args = ("RecvThread",client))
 
@@ -163,29 +166,26 @@ def click_toDisconnect():
     
 
 def chat_window(name):
-    rT.start()
+
     global screen3
     global txt_msg
     global tmp_name
 
     tmp_name  = name
 
-    con = sqlite3.connect('loggy.db',check_same_thread=False)
+   
 
-    
-    
     send_nickname(name)
 
-    screen3 = Toplevel(screen2)
-    
+    rT.start()
 
+    screen3 = Toplevel(screen)
+    
     screen3.title(name)
     screen3.geometry("700x750")
 
     txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
     txt.pack()
-
-    sql_fetchall(con, txt)
 
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
@@ -198,11 +198,14 @@ def chat_window(name):
     Label(screen3, text="").pack()
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
-    
-   
-    
-    # screen3.update()
+    screen3.update(1)
+
     rT.join()
+    
+
+
+
+
 
 def user_not_found():
     global screen4
