@@ -85,7 +85,7 @@ def delete2():
     screen2.destroy()
 
 def delete3():
-    scrn_chat.destroy()
+    screen3.destroy()
 
 def register():
     global screen1
@@ -147,11 +147,11 @@ def password_not_found():
     screen4.geometry("150x100")
     Label(screen4,text="password not found").pack()
 
-'''
+
 def click_tosend():
     res = str(txt_msg.get())
     send(res)
-    txt_msg.delete(0,END)'''
+    txt_msg.delete(0,END)
     
 def delete_mainScren():
     # send(DISCONNECT_MSG)
@@ -164,7 +164,7 @@ def click_toDisconnect():
 
 def chat_window(name):
     rT.start()
-    global scrn_chat
+    global screen3
     global txt_msg
     global tmp_name
 
@@ -176,13 +176,33 @@ def chat_window(name):
     
     send_nickname(name)
 
-    scrn_chat = Toplevel(screen2)
+    screen3 = Toplevel(screen2)
     
 
-    scrn_chat.title(name)
-    scrn_chat.geometry("700x750")
+    screen3.title(name)
+    screen3.geometry("700x750")
 
+    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
+    txt.pack()
+
+    sql_fetchall(con, txt)
+
+    Label(screen3,text="Your message:").pack()
+    Label(screen3,text="").pack()
+
+    txt_msg = Entry(screen3, width=50)
+    txt_msg.pack()
+    Label(screen3,text="").pack()
+
+    Button(screen3, text="Send", height="2", width="30", command= click_tosend).pack()
+    Label(screen3, text="").pack()
+
+    Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
+   
+    
+    # screen3.update()
+    rT.join()
 
 def user_not_found():
     global screen4
