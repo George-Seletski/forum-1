@@ -182,27 +182,7 @@ def chat_window(name):
     scrn_chat.title(name)
     scrn_chat.geometry("700x750")
 
-    txt = scrolledtext.ScrolledText(scrn_chat,width=70, height = 25)
-    txt.pack()
-
-    sql_fetchall(con, txt)
-
-    Label(scrn_chat,text="Your message:").pack()
-    Label(scrn_chat,text="").pack()
-
-    txt_msg = Entry(scrn_chat, width=50)
-    txt_msg.pack()
-    Label(scrn_chat,text="").pack()
-
-    Button(scrn_chat, text="Send", height="2", width="30", command= click_tosend).pack()
-    Label(scrn_chat, text="").pack()
-
-    Button(scrn_chat, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
-   
-    
-    # scrn_chat.update()
-    rT.join()
 
 def user_not_found():
     global screen4
