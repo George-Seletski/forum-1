@@ -85,7 +85,7 @@ def delete2():
     screen2.destroy()
 
 def delete3():
-    screen3.destroy()
+    scrn_chat.destroy()
 
 def register():
     global screen1
@@ -163,8 +163,8 @@ def click_toDisconnect():
     
 
 def chat_window(name):
-    
-    global screen3
+    rT.start()
+    global scrn_chat
     global txt_msg
     global tmp_name
 
@@ -172,36 +172,37 @@ def chat_window(name):
 
     con = sqlite3.connect('loggy.db',check_same_thread=False)
 
-    rT.start()
+    
     
     send_nickname(name)
 
-    screen3 = Toplevel(screen2)
+    scrn_chat = Toplevel(screen2)
     
 
-    screen3.title(name)
-    screen3.geometry("700x750")
+    scrn_chat.title(name)
+    scrn_chat.geometry("700x750")
 
-    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
+    txt = scrolledtext.ScrolledText(scrn_chat,width=70, height = 25)
     txt.pack()
 
     sql_fetchall(con, txt)
 
-    Label(screen3,text="Your message:").pack()
-    Label(screen3,text="").pack()
+    Label(scrn_chat,text="Your message:").pack()
+    Label(scrn_chat,text="").pack()
 
-    txt_msg = Entry(screen3, width=50)
+    txt_msg = Entry(scrn_chat, width=50)
     txt_msg.pack()
-    Label(screen3,text="").pack()
+    Label(scrn_chat,text="").pack()
 
-    Button(screen3, text="Send", height="2", width="30", command= click_tosend).pack()
-    Label(screen3, text="").pack()
+    Button(scrn_chat, text="Send", height="2", width="30", command= click_tosend).pack()
+    Label(scrn_chat, text="").pack()
 
-    Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
+    Button(scrn_chat, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     
+   
+    
+    # scrn_chat.update()
     rT.join()
-    
-    # screen3.update()
 
 def user_not_found():
     global screen4
