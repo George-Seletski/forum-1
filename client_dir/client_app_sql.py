@@ -147,11 +147,11 @@ def password_not_found():
     screen4.geometry("150x100")
     Label(screen4,text="password not found").pack()
 
-
+'''
 def click_tosend():
     res = str(txt_msg.get())
     send(res)
-    txt_msg.delete(0,END)
+    txt_msg.delete(0,END)'''
     
 def delete_mainScren():
     # send(DISCONNECT_MSG)
