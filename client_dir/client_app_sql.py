@@ -163,10 +163,18 @@ def delete_mainScren():
 def click_toDisconnect():
     delete3()
     send(DISCONNECT_MSG)
-    
+'''
+#function waiting to receive and print a message
+def receive(nothing,message):
+
+    while True:
+
+        data = socket.recv(1024)
+        if message != data:
+            print(str(data,'utf8'))'''
 
 def chat_window(name):
-
+    rT.start()
     global screen3
     global txt_msg
     global tmp_name
@@ -177,7 +185,7 @@ def chat_window(name):
 
     send_nickname(name)
 
-    rT.start()
+    
 
     screen3 = Toplevel(screen)
     
@@ -198,8 +206,10 @@ def chat_window(name):
     Label(screen3, text="").pack()
 
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
+    screen3.update(1)
 
     rT.join()
+        
     
 
 

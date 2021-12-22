@@ -86,6 +86,7 @@ def handle_client(conn, addr):
     conn.close()
 
 #Function that continuosly searches for connections
+'''
 def send_clients(connectionList, addressList,nm_client):
 
     while True:
@@ -99,23 +100,16 @@ def send_clients(connectionList, addressList,nm_client):
                 connectionList[i].sendto(message, addressList[i])
 
     connection.close()
-
+'''
 
 def start(): # the main process 
-    nm_client = 0
     addr_list = []
-    coon_list = []
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
-        print('Got connection from', addr)
-
-        nm_client += 1
         addr_list.append(addr)
-        coon_list.append(conn)
-
-        thread = threading.Thread(target=send_clients,args=(conn, addr,nm_client))
+        thread = threading.Thread(target=handle_client,args=(conn, addr))
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
@@ -123,7 +117,7 @@ def start(): # the main process
         thread.start()
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
-    socket.close()
+    
         
 def quit(self): # destruction of window
     self.root.destroy()
