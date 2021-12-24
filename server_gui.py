@@ -51,23 +51,24 @@ def sql_insert(con, entities): # inserting into database
 
     
 
-def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
+'''def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
     
     cursorObj = con.cursor()
     cursorObj.execute('SELECT * FROM logs')
     rows = cursorObj.fetchall() #getting all data from sql query
     for row in rows:
         text.insert(INSERT,row)
-        text.insert(INSERT,'\n')
+        text.insert(INSERT,'\n')'''
 
-
-def handle_client(conn, addr): 
+def handle_client2(conn, addr): 
     
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
         
+        print(msg_length,'|')
+
         if msg_length:
            
             msg_length = int(msg_length)
@@ -85,8 +86,26 @@ def handle_client(conn, addr):
             # conn.send("Msg recieved".encode(FORMAT))
     conn.close()
 
+def handle_client_name(conn, addr): 
+    
+    print(f"[NEW CONNECTION] {addr} connected.")
+    connected = True
+    while connected:
+        msg_length = conn.recv(HEADER).decode(FORMAT)
+       
+        if msg_length:
+            len = int(msg_length)
+            if len < 2:
+                msg = conn.recv(len).decode(FORMAT)
+                stage = (str(addr), str(msg), str(time_now))
+                sql_insert(con, stage)
+    return msg
+
+                
+    conn.close()
+
 #Function that continuosly searches for connections
-'''
+
 def send_clients(connectionList, addressList,nm_client):
 
     while True:
@@ -97,26 +116,37 @@ def send_clients(connectionList, addressList,nm_client):
             #for loop to send message to each
             for i in range(0,nm_client):
                 #connectionList[i].sendto(bytes(str(message),encoding='utf8'), addressList[i])
-                connectionList[i].sendto(message, addressList[i])
+                connectionList[i].sendto(message, addressList[i]) 
 
     connection.close()
-'''
+
 
 def start(): # the main process 
+
+    nm_client = 0
+
     addr_list = []
+    con_list = []
+
     server.listen()
     # print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
-        addr_list.append(addr)
-        thread = threading.Thread(target=handle_client,args=(conn, addr))
+        print('Got connection from', addr)
+        nm_client += 1
 
+        addr_list.append(addr)
+        con_list.append(conn)
+        
+       # thread = threading.Thread(target=send_clients,args=(con_list, addr_list,nm_client))
+        thread2 = threading.Thread(target=handle_client2,args=(conn, addr))
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
 
-        thread.start()
+        thread2.start()
+       #  thread.start()
 
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
+        # print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
     
         
 def quit(self): # destruction of window
@@ -135,7 +165,7 @@ def server_wind(): # drawing server
     while True:
         window = Tk()
         window.title("FORUM")
-        window.geometry('400x250')
+        window.geometry('1000x1000')
                 
         #window.update()
 
@@ -147,7 +177,7 @@ def server_wind(): # drawing server
         time.sleep(1)
 
         #time.sleep(5)
-        sql_fetchall(con,txt)
+        #sql_fetchall(con,txt)
         
         # txt.configure(state='disabled')
         time.sleep(2)
