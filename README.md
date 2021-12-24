@@ -1,6 +1,6 @@
 # forum-1
 ### Concept:
-<img src="describtion_of_the_concept\photos\flowchart (1).jpg" alt="photo-concept"/>
+
 
 ### Description of the process:
 Server gets data from a client and then he shows the window with published messages from the client(clients).
