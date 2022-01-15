@@ -49,8 +49,6 @@ def sql_insert(con, entities): # inserting into database
     cursorObj.execute('INSERT INTO logs(name_client,msg, date_time) VALUES(?,?, ?)', entities)
     con.commit()
 
-    
-
 def sql_fetchall(con, text): # pasting query results from db in server-window(TXT)
     
     cursorObj = con.cursor()
@@ -87,7 +85,7 @@ def handle_client(conn, addr):
 
 #Function that continuosly searches for connections
 
-def send_clients(connectionList, addressList,nm_client):
+def send_clients(connection, connectionList, addressList,nm_client):
 
     while True:
         for j in range(0,nm_client):
@@ -101,7 +99,7 @@ def send_clients(connectionList, addressList,nm_client):
                 #connectionList[i].sendto(bytes(str(message),encoding='utf8'), addressList[i])
                 connectionList[i].sendto(message, addressList[i])
 
-    connection.close()
+            connectionList[j].close()
 
 
 def start(): # the main process 
@@ -117,10 +115,11 @@ def start(): # the main process
         addr_list.append(addr)
         connection_list.append(conn)
 
-        # for inserting data on server-window-form
-        displaying_thread = threading.Thread(target=handle_client, args=(addr,conn))
-        displaying_thread.start()
-        # for broadcasting messages
+        # --------for inserting data on server-window-form--------
+        # displaying_thread = threading.Thread(target=handle_client, args=(addr,conn))
+        # displaying_thread.start()
+
+        # -------for broadcasting messages-----------------
         sending_thread = threading.Thread(target=send_clients,args=(addr_list, connection_list, nm)) 
         sending_thread.start()
 
