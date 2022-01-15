@@ -10,7 +10,7 @@ from tkinter import scrolledtext
 import tkinter
 import random
 
-HEADER = 512
+HEADER = 1024
 PORT = 5050
 SERVER = socket.gethostbyname(socket.gethostname())  #192.168.56.1
 ADDR = (SERVER, PORT)
@@ -86,13 +86,15 @@ def handle_client(conn, addr):
     conn.close()
 
 #Function that continuosly searches for connections
-'''
+
 def send_clients(connectionList, addressList,nm_client):
 
     while True:
         for j in range(0,nm_client):
-            message = connectionList[j].recv(1024)
-            print(str(message,'utf8'))
+            message = connectionList[j].recv(HEADER)
+            tmp_msg = message.decode(FORMAT)
+            length_ms = int(tmp_msg)
+            print('from client ({connectionList[j]}) :: ', tmp_msg)
 
             #for loop to send message to each
             for i in range(0,nm_client):
@@ -100,21 +102,33 @@ def send_clients(connectionList, addressList,nm_client):
                 connectionList[i].sendto(message, addressList[i])
 
     connection.close()
-'''
+
 
 def start(): # the main process 
+    nm = 0 
     addr_list = []
+    connection_list = []
+
     server.listen()
-    # print(f"[LISTENING] Server is listening on {SERVER}")
+    print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        nm += 1
         addr_list.append(addr)
-        thread = threading.Thread(target=handle_client,args=(conn, addr))
+        connection_list.append(conn)
+
+        # for inserting data on server-window-form
+        displaying_thread = threading.Thread(target=handle_client, args=(addr,conn))
+        displaying_thread.start()
+        # for broadcasting messages
+        sending_thread = threading.Thread(target=send_clients,args=(addr_list, connection_list, nm)) 
+        sending_thread.start()
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
 
-        thread.start()
+        
+        
 
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
     
@@ -149,7 +163,6 @@ def server_wind(): # drawing server
         #time.sleep(5)
         sql_fetchall(con,txt)
         
-        # txt.configure(state='disabled')
         time.sleep(2)
         window.mainloop()
         
