@@ -31,7 +31,6 @@ def send_nickname(nm):
     client.send(send_nm_l)
     client.send(nickn)
 
-
 def send(msg):
     message = msg.encode(FORMAT)
     msg_length = len(message)
