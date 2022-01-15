@@ -28,7 +28,7 @@ def send_nickname(nm):
     nm_length = len(nickn)
     send_nm_l = str(nm_length).encode(FORMAT)
     send_nm_l += b' ' * (HEADER - len(send_nm_l))
-    client.send(send_nm_l)
+    #client.send(send_nm_l)
     client.send(nickn)
 
 def send(msg):
@@ -157,8 +157,8 @@ def password_not_found():
 
 def click_tosend():
     res = str(txt_msg.get())
-    socket.sendall(bytes(res, encoding=FORMAT))
-    #send(res)
+    #socket.sendall(bytes(res, encoding=FORMAT))
+    send(res)
     txt_msg.delete(0,END)
     
 def delete_mainScren():
@@ -176,13 +176,14 @@ def delete_client(name):
 
 
 #function waiting to receive and print a message
-def receive(nothing,message):
+'''def receive(nothing,message):
 
     while True:
 
         data = client.recv(1024)
         if message != data:
             print(str(data,'utf8'))
+'''
 
 def chat_window(name):
     rT.start()
@@ -204,9 +205,13 @@ def chat_window(name):
     screen3.title(name)
     screen3.geometry("700x750")
 
-    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
-    txt.pack()
+    Label(screen3,text="Received messages:").pack()
+    txt = scrolledtext.ScrolledText(screen3,width=50, height = 10).pack()
 
+    Label(screen3,text="Mesage to send:").pack()
+    txt2 = scrolledtext.ScrolledText(screen3,width=50, height = 10).pack()
+
+    Label(screen3,text="").pack()
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
 
@@ -220,11 +225,12 @@ def chat_window(name):
     Button(screen3, text="CloseApp", height="2", width="30", command=click_toDisconnect).pack()
     Label(screen3, text="").pack()
     
-    Button(screen3, text="CloseApp & Delete Client", height="2", width="30", command=delete_client(name)).pack()
+    Button(screen3, text="CloseApp & Delete Client", height="2", width="30").pack()
 
     # recieving_thr = threading.Thread(target=receive, args=(nothing,))
     # recieving_thr.start()
-        
+
+    # rT.join()    
     
 
 
@@ -292,10 +298,13 @@ def login_verify():
 
     for row in check_data_in_db():
         if str(username1) in row:
+            # print('USER IS HERE!')
             if str(password1) in row:
-                #chat_window(username1)
-                chat_thr = threading.Thread(target=chat_window, args=(username1))
-                chat_thr.start()
+                # print('PAS IS HERE!')
+                chat_window(username1)
+                send_nickname(username1)
+                #chat_thr = threading.Thread(target=chat_window, args=(username1))
+                #chat_thr.start()
                
                 delete2()
             else:

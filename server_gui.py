@@ -67,9 +67,9 @@ def handle_client(conn, addr):
         
         if msg_length:
            
-            msg_length = int(msg_length)
+            msg_length = len(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
-            
+            print(msg)
             if msg == DISCONNECT_MSG:
                 connected = False
 
@@ -83,7 +83,7 @@ def handle_client(conn, addr):
     conn.close()
 
 #Function that continuosly searches for connections
-
+'''
 def send_clients(connection, connectionList, addressList,nm_client):
 
     while True:
@@ -99,7 +99,7 @@ def send_clients(connection, connectionList, addressList,nm_client):
                 connectionList[i].sendto(message, addressList[i])
 
             connectionList[j].close()
-
+'''
 
 def start(): # the main process 
     nm = 0 
@@ -110,24 +110,21 @@ def start(): # the main process
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
+        print('Got connection from', addr)
         nm += 1
         addr_list.append(addr)
         connection_list.append(conn)
 
         # --------for inserting data on server-window-form--------
-        # displaying_thread = threading.Thread(target=handle_client, args=(addr,conn))
-        # displaying_thread.start()
+        displaying_thread = threading.Thread(target=handle_client, args=(conn,addr))
+        displaying_thread.start()
 
         # -------for broadcasting messages-----------------
-        sending_thread = threading.Thread(target=send_clients,args=(addr_list, connection_list, nm)) 
-        sending_thread.start()
+        # sending_thread = threading.Thread(target=send_clients,args=(addr_list, connection_list, nm)) 
+        # sending_thread.start()
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
-
-        
-        
-
         print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
     
         
