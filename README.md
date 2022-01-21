@@ -9,3 +9,12 @@ After user signed up in system. The client's program record all gotten info from
 Then if user write something on forum, the server will receive message from the plugged client.<br>
 While the reciveng it should to check the user's name in the "CLIENTS". After that it shows messages on its window.
 
+### How to launch:
+to start server
+```
+python server_gui.py
+```
+to start clinet
+```
+python client_dir/client_app_sql.py
+```

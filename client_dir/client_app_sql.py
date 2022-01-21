@@ -192,9 +192,10 @@ def chat_window(name):
     screen3.title(name)
     screen3.geometry("700x750")
 
-    txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
-    txt.pack()
-
+    #txt = scrolledtext.ScrolledText(screen3,width=70, height = 25)
+    #txt.pack()
+    Label(screen3,text="").pack()
+    
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
 
