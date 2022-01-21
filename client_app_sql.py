@@ -208,14 +208,11 @@ def chat_window(name):
     Label(screen3,text="Received messages:").pack()
     txt = scrolledtext.ScrolledText(screen3,width=50, height = 10).pack()
 
-    Label(screen3,text="Mesage to send:").pack()
-    txt2 = scrolledtext.ScrolledText(screen3,width=50, height = 10).pack()
-
     Label(screen3,text="").pack()
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
 
-    txt_msg = Entry(screen3, width=50)
+    txt_msg = Entry(screen3, width=50, height = 10)
     txt_msg.pack()
     Label(screen3,text="").pack()
 

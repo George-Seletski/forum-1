@@ -64,7 +64,6 @@ def handle_client(conn, addr):
     connected = True
     while connected:
         msg_length = conn.recv(HEADER).decode(FORMAT)
-        
         if msg_length:
            
             msg_length = len(msg_length)
