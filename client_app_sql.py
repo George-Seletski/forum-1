@@ -157,7 +157,6 @@ def password_not_found():
 
 def click_tosend():
     res = str(txt_msg.get())
-    print(res)
     #socket.sendall(bytes(res, encoding=FORMAT))
     send(res)
     txt_msg.delete(0,END)
@@ -213,9 +212,8 @@ def chat_window(name):
     Label(screen3,text="Your message:").pack()
     Label(screen3,text="").pack()
 
-    txt_msg = Entry(screen3, width=50)
+    txt_msg = Entry(screen3, width=50, height = 10)
     txt_msg.pack()
-    
     Label(screen3,text="").pack()
 
     Button(screen3, text="Send", height="2", width="30", command= click_tosend).pack()
