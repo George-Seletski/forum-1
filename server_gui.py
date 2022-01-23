@@ -9,9 +9,11 @@ from tkinter import scrolledtext
 import tkinter
 import random
 
+
 HEADER = 1024
 PORT = 5050
-SERVER = socket.gethostbyname(socket.gethostname())  #192.168.56.1
+# SERVER = socket.gethostbyname(socket.gethostname())  #192.168.56.1
+SERVER = '192.168.56.1'
 ADDR = (SERVER, PORT)
 FORMAT = 'utf-8'
 DISCONNECT_MSG = "!DISCONNECT"
@@ -24,6 +26,9 @@ time_now = today.strftime("%Y-%m-%d-%H.%M.%S")
 
 fl_cl = False #flag for number of clients
 
+
+clients = []
+aliases = []
 
 def sql_connection(): # connection to database file 
     try:
@@ -57,15 +62,20 @@ def sql_fetchall(con, text): # pasting query results from db in server-window(TX
         text.insert(INSERT,row)
         text.insert(INSERT,'\n')
 
+'''
 
 def handle_client(conn, addr): 
     
     print(f"[NEW CONNECTION] {addr} connected.")
     connected = True
     while connected:
-        msg_length = conn.recv(HEADER).decode(FORMAT)
+        
+        msg_length = conn.recv(HEADER)
+        broadcast(msg_length)
+        msg_length.decode(FORMAT)
+
         if msg_length:
-           
+            
             msg_length = len(msg_length)
             msg = conn.recv(msg_length).decode(FORMAT)
             print(msg)
@@ -80,8 +90,8 @@ def handle_client(conn, addr):
 
             # conn.send("Msg recieved".encode(FORMAT))
     conn.close()
-
-#Function that continuosly searches for connections
+'''
+#Function1 that continuosly searches for connections
 '''
 def send_clients(connection, connectionList, addressList,nm_client):
 
@@ -100,19 +110,39 @@ def send_clients(connection, connectionList, addressList,nm_client):
             connectionList[j].close()
 '''
 
-def start(): # the main process 
-    nm = 0 
-    addr_list = []
-    connection_list = []
 
+def handle_client(client):
+    while True:
+        try:
+            message = client.recv(1024)
+            record = (str(client.decode(FORMAT)),str(message), str(time_now))
+            sql_insert(con, record)
+            broadcast(message)
+        except:
+            index = clients.index(client)
+            clients.remove(client)
+            client.close()
+            alias = aliases[index]
+            broadcast(f'{alias} has left the chat room!'.encode('utf-8'))
+            aliases.remove(alias)
+            break
+
+#Function1 that broadcasts msg
+def broadcast(message):
+    for client in clients:
+        client.send(message)
+
+'''def start(): # the main process 
+    nm = 0 
     server.listen()
     print(f"[LISTENING] Server is listening on {SERVER}")
     while True:
         conn, addr = server.accept()
         print('Got connection from', addr)
+         
         nm += 1
-        addr_list.append(addr)
-        connection_list.append(conn)
+        addr.append(addr)
+        conn.append(conn)
 
         # --------for inserting data on server-window-form--------
         displaying_thread = threading.Thread(target=handle_client, args=(conn,addr))
@@ -124,7 +154,7 @@ def start(): # the main process
 
         tmp_row = (str(addr), 'NEW CONNECTION!', str(time_now))
         sql_insert(con, tmp_row)
-        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")
+        print(f"[ACTIVE CONNECTIONS] {threading.activeCount() - 2}")'''
     
         
 def quit(self): # destruction of window
@@ -135,9 +165,24 @@ def destroy_wind(win,ser_w): #closing the whole app
     ser_w.stop()
     win.quit()
 
+def receive():
+    server.listen()
+    while True:
+        print('Server is running and listening ...')
+        client, address = server.accept()
+        print(f'connection is established with {str(address)}')
+        # client.send('alias?'.encode('utf-8'))
+        alias = client.recv(1024)
+        aliases.append(alias)
+        clients.append(client)
+        print(f'The alias of this client is {alias}'.encode('utf-8'))
+        broadcast(f'{alias} has connected to the chat room'.encode('utf-8'))
+        client.send('you are now connected!'.encode('utf-8'))
+        thread = threading.Thread(target=handle_client, args=(client,))
+        thread.start()
 
 
-
+'''
 def server_wind(): # drawing server
  
     while True:
@@ -159,7 +204,7 @@ def server_wind(): # drawing server
         
         time.sleep(2)
         window.mainloop()
-        
+        '''
 
 ###############################################################################################
 global con 
@@ -168,10 +213,10 @@ sql_fetch(con)
 #print("[STARTING] server is starting...")
 
 
-server_window = threading.Thread(target=server_wind)
-server_window.start()
+# server_window = threading.Thread(target=server_wind)
+# server_window.start()
 
 
 
-start()
+receive()
 
