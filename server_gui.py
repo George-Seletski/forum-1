@@ -11,7 +11,7 @@ import random
 
 
 HEADER = 1024
-PORT = 5050
+PORT = 4040
 # SERVER = socket.gethostbyname(socket.gethostname())  #192.168.56.1
 SERVER = '192.168.56.1'
 ADDR = (SERVER, PORT)
@@ -182,7 +182,7 @@ def receive():
         thread.start()
 
 
-'''
+
 def server_wind(): # drawing server
  
     while True:
@@ -204,7 +204,7 @@ def server_wind(): # drawing server
         
         time.sleep(2)
         window.mainloop()
-        '''
+        
 
 ###############################################################################################
 global con 
@@ -213,8 +213,8 @@ sql_fetch(con)
 #print("[STARTING] server is starting...")
 
 
-# server_window = threading.Thread(target=server_wind)
-# server_window.start()
+server_window = threading.Thread(target=server_wind)
+server_window.start()
 
 
 

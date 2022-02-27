@@ -11,9 +11,10 @@ from tkinter import scrolledtext
 
 
 DISCONNECT_MSG = "!DISCONNECT"
-HEADER = 256
-PORT = 5050
-SERVER = "192.168.56.1"
+HEADER = 1024
+PORT = 4040
+# SERVER = socket.gethostbyname(socket.gethostname())  #192.168.56.1
+SERVER = '192.168.56.1'
 FORMAT = 'utf-8'
 ADDR = (SERVER,PORT)
 

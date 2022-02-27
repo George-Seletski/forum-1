@@ -9,11 +9,11 @@ from sqlite3 import *
 
 #----Now comes the sockets part----
 HOST = "192.168.56.1"
-PORT = PORT = 5000
+PORT = PORT = 4950
 
 msg_list = []
-my_msg = 0
-
+my_msg = ''
+msg = ''
 
 BUFSIZ = 1024
 ADDR = (HOST, PORT)
@@ -206,17 +206,20 @@ def delete_mainScren():
 #############################################################################
 def receive():
     """Handles receiving of messages."""
+    global msg
+    global msg_list
     while True:
         try:
             msg = client_socket.recv(BUFSIZ).decode("utf8")
-            msg_list.insert(tkinter.END, msg)
+            msg_list.insert(tkinter.END, str(msg))
         except OSError:  # Possibly client has left the chat.
             break
 
 
 def send(event=None):  # event is passed by binders.
     """Handles sending of messages."""
-    
+    global msg
+    global my_msg
     msg = my_msg.get()
     my_msg.set("")  # Clears input field.
     client_socket.send(bytes(msg, "utf-8"))
